@@ -29,7 +29,9 @@ Route::get('/admin/feedback',[AdminController::class,'feedback']);
 Route::get('/admin/viewfeedback',[AdminController::class,'viewfeedback']);
 Route::get('/admin/quizdetails',[AdminController::class,'quizdetails']);
 Route::get('/admin/questionsdetails',[AdminController::class,'questionsdetails']);
+Route::post('/admin/savequestion',[AdminController::class,'savequestion']);
 Route::get('/admin/removequiz',[AdminController::class,'removequiz']);
+Route::post('/admin/savequiz',[AdminController::class,'savequiz']);
 
 
 //Admin Routes

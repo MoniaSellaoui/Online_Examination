@@ -20,6 +20,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/',[LoginController::class,'login']);
+Route::post('/adminacces',[LoginController::class,'adminacces']);
+Route::get('/adminsignout',[LoginController::class,'signout']);
 
 //Admin Routes
 Route::get('/admin/dashboard',[AdminController::class,'dashboard']);

@@ -34,6 +34,11 @@ Route::get('/admin/questionsdetails',[AdminController::class,'questionsdetails']
 Route::post('/admin/savequestion',[AdminController::class,'savequestion']);
 Route::get('/admin/removequiz',[AdminController::class,'removequiz']);
 Route::post('/admin/savequiz',[AdminController::class,'savequiz']);
+Route::get('/admin/respond/{topic}',[AdminController::class,'respondquestion']);
+Route::get('/admin/assessements',[AdminController::class,'assessements']);
+Route::post('/admin/saveanswer',[AdminController::class,'saveanswer']);
+Route::get('/admin/respond1',[AdminController::class,'respondquestion1']);
+Route::get('/admin/results',[AdminController::class,'result']);
 
 
 //Admin Routes

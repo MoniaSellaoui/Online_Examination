@@ -16,6 +16,7 @@ QUESTIONS DETAILS
             {{ csrf_field() }}
                 <b>Question number&nbsp;{{$quiz->num+1}}&nbsp;:</b><br/>
                 <div class="form-group">
+               
                   <label class="col-md-12 control-label" for="qns1 "></label>  
                   <div class="col-md-12">
                   <textarea rows="3" cols="5" name="question" class="form-control" placeholder="Write question number 1 here..."></textarea>  

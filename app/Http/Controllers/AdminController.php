@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Quiz;
 use App\Models\Question;
+use App\Models\Score;
 
 class AdminController extends Controller
 {
@@ -13,8 +14,9 @@ class AdminController extends Controller
 
 
     public function dashboard()
-    {$quizzes=Quiz::get();
-        return view('Admin.dashboard')->with('quizzes',$quizzes);
+    {$scores=Score::all();
+        $quizzes=Quiz::get();
+        return view('Admin.dashboard')->with('quizzes',$quizzes)->with('scores',$scores);
     }
     
     public function users()
@@ -52,7 +54,7 @@ public function savequiz(Request $request)
     $quiz->save();
 
     $quiz=Quiz::where('topic',$request->input('topic'))->first();
-    session::put('quiz',$quiz);
+    session::put('quiz', $quiz);
     return redirect('/admin/questionsdetails');
     
 
@@ -113,5 +115,119 @@ public function removequiz()
     return view('Admin.removequiz');
 }
 
+public function respondquestion($topic)
+{
+  
 
+    if(!session::get('num')&&!session::get('quiz'))
+    {
+        session::put('num',1);
+        $quiz=Quiz::where('topic',$topic)->first();
+        session::put('quiz', $quiz);
+   
+
+    }
+    return redirect('/admin/assessements');
+}
+
+public function assessements()
+{
+    $question = Question::where('topic',  session::get('quiz')->topic)->where('numquestion',session::get('num'))->first();
+    session::put('question',$question);
+    return view('admin.assessements')->with('question',$question);
+}
+
+
+public function saveanswer(Request $request)
+{$score = Score::where('email', session::get('admin')->email)->where('topic',session::get('quiz')->topic)->first();
+    if(request->input('ans'))
+    {
+        if(request->input('ans')==session::get('question')->correct)
+        {
+            if(!session::get('score'))
+            {
+                session::put('score',session::get('quiz')->mark);
+            }else
+            {
+                $sc=session::get('score')+session::get('quiz')->mark;
+                session::forget('score');
+                session::put('score',$sc);
+            }
+        }
+        if(!session::get('solved'))
+        {
+            session::put('solved',1);
+        }else
+        { $solved=session::get('solved') + 1;
+            session::forget('solved');
+            session::put('solved',$solved);
+
+        }
+    if(!$score && session::get('num')==session::get('quiz')->totalquestions)
+    {
+       $score=new Score();
+       $score->topic=session::get('quiz')->topic;
+       $score->email=session::get('admin')->email;
+       if(session::get('score'))
+       {
+        $score->score=session::get('score');
+       }else
+       {
+        $score->score=0;
+       }
+       $score->mark=session::get('quiz')->mark;
+       $score->numquestion=session::get('quiz')->totalquestion;
+       if(session::get('solved'))
+       {
+        $score->solved=session::get('solved');
+       }else
+       {
+        $score->solved=0;
+       }
+       $score->save();
+    }elseif($score && session::get('num')==session::get('quiz')->totalquestions)
+    {
+        if(session::get('score'))
+        {
+         $score->score=session::get('score');
+        }else
+        {
+         $score->score=0;
+        } 
+        
+        if(session::get('solved'))
+        {
+         $score->solved=session::get('solved');
+        }else
+        {
+         $score->solved=0;
+        }
+        $score->update();
+
+    }
+    }
+return redirect ('/admin/respond1');
+}
+public function respondquestion1()
+{
+    $num= session::get('num')+1;
+    session::forget('num');
+    session::put('num',$num);
+if($num <= session::get('quiz')->totalquestions)
+{
+    return redirect('/admin/assessements');
+}else{
+    session::forget('num');
+    session::forget('score');
+    session::forget('solved');
+    return redirect('/admin/results');
+}
+
+}
+public function result()
+{  $score=Score::where('topic',session::get('quiz')->topic)->where('email',session::get('admin')->email)->first();
+
+     session::forget('quiz');
+    return view('/admin/results')->with('score',$score);
+}
 }

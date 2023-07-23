@@ -4,7 +4,9 @@
         <span class="logo">Test Your Skill</span>
       </div>
       <div class="col-md-4 col-md-offset-2">
-        <span class="pull-right top title1" ><span class="log1"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;Hello,</span> <a href="" class="log log1">Héritier</a>&nbsp;|&nbsp;<a href="" class="log"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Signout</button></a></span>
+        <span class="pull-right top title1" ><span class="log1"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;Hello,</span> 
+        <a href="" class="log log1">{{Session::get('Developer')->name}}</a>&nbsp;|&nbsp;<a href="/user/signout" 
+        class="log"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Signout</button></a></span>
       </div>
     </div>
   </div>
@@ -27,7 +29,7 @@
             <li class="{{request()->is('user/home') ? 'active': ''}}" ><a href="/user/home"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;Home<span class="sr-only">(current)</span></a></li>
             <li class="{{request()->is('user/history') ? 'active': ''}}"><a href="/user/history"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp;History</a></li>
             <li class="{{request()->is('user/ranking') ? 'active': ''}}"><a href="/user/ranking"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Ranking</a></li>
-            <li class="pull-right"> <a href=""><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;Signout</a></li>
+            <li class="pull-right"> <a href="/user/signout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;Signout</a></li>
           </ul>
           <form class="navbar-form navbar-left" role="search">
             <div class="form-group">

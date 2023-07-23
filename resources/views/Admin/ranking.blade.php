@@ -18,21 +18,18 @@
                 <td><b>College</b></td>
                 <td><b>Score</b></td>
               </tr><br />
+              <input type="hidden" {{$increment=1}}>
+              @foreach ($developers as $developer )
               <tr>
-                <td style="color:#99cc32"><b>4</b></td>
-                <td>Héritier</td>
-                <td></td>
-                <td></td>
-                <td>1</td>
-                <td></td>
+                <td>{{$increment}}</td>
+                <td>{{$developer->name}}</td>
+                <td>{{$developer->gender}}</td>
+                <td>{{$developer->college}}</td>
+                <td>{{ $developer->score }}</td>
+            
               </tr>
-              <tr>
-                <td style="color:#99cc32"><b>5</b></td>
-                <td>Héritier</td>
-                <td>M</td>
-                <td>ISPT_KIN</td>
-                <td>-1</td>
-                <td></td>
+              <input type="hidden" {{$increment++}}>
+              @endforeach
             </table>
           </div>
         </div>

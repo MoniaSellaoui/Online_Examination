@@ -26,7 +26,7 @@
             @foreach ($quizzes as $quiz )
                   <input type="hidden" {{$restart=0}}>
               @foreach ($scores as $score )
-                @if (session::get('admin')->email == $score->email && $quiz->topic == $score->topic)
+                @if (Session::get('admin')->email == $score->email && $quiz->topic == $score->topic)
 
                  <input type="hidden" {{$restart++}}>
                 @endif

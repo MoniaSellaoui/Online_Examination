@@ -38,8 +38,8 @@
                 <h4 class="modal-title title1"><span style="color:orange">Log In</span></h4>
               </div>
               <div class="modal-body">
-                <form class="form-horizontal" action="" method="POST">
-                  <fieldset>
+                <form class="form-horizontal" action="/user/useracces" method="POST">
+                 {{ csrf_field() }}
                   <!-- Text input-->
                   <div class="form-group">
                     <label class="col-md-3 control-label" for="email"></label>  
@@ -73,8 +73,8 @@
         <div class="col-md-7"></div>
         <div class="col-md-4 panel">
             <!-- sign in form begins -->  
-            <form class="form-horizontal" name="form" action="sign.php?q=account.php" onSubmit="return validateForm()" method="POST">
-              <fieldset>
+            <form class="form-horizontal" name="form" action="/user/signup" onSubmit="return validateForm()" method="POST">
+             {{ csrf_field() }}
 
               <!-- Text input-->
               <div class="form-group">
@@ -116,7 +116,7 @@
               <div class="form-group">
                 <label class="col-md-12 control-label" for="mob"></label>  
                 <div class="col-md-12">
-                <input id="mob" name="mob" placeholder="Enter your mobile number" class="form-control input-md" type="number">
+                <input id="mob" name="phone" placeholder="Enter your mobile number" class="form-control input-md" type="number">
                 </div>
               </div>
               <!-- Text input-->

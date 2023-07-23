@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Score;
+use App\Models\Developer;
 
 class AdminController extends Controller
 {
@@ -20,14 +21,15 @@ class AdminController extends Controller
     }
     
     public function users()
-    {
-        return view('Admin.users');
+    {  $developers=Developer::get();
+        return view('Admin.users')->with('developers',$developers);
     }
 
 
 public function ranking()
 {
-    return view('Admin.ranking');
+    $developers= Developer::orderBy('score','desc')->get();
+    return view('Admin.ranking')->with('developers',$developers);
 }
 
 
@@ -119,11 +121,11 @@ public function respondquestion($topic)
 {
   
 
-    if(!session::get('num')&&!session::get('quiz'))
+    if(!Session::get('num') && (!Session::get('quiz')))
     {
-        session::put('num',1);
+        Session::put('num',1);
         $quiz=Quiz::where('topic',$topic)->first();
-        session::put('quiz', $quiz);
+       Session::put('quiz', $quiz);
    
 
     }
@@ -132,72 +134,73 @@ public function respondquestion($topic)
 
 public function assessements()
 {
-    $question = Question::where('topic',  session::get('quiz')->topic)->where('numquestion',session::get('num'))->first();
-    session::put('question',$question);
+    $question = Question::where('topic', Session::get('quiz')->topic)->where('numquestion',Session::get('num'))->first();
+  Session::put('question',$question);
     return view('admin.assessements')->with('question',$question);
 }
 
 
 public function saveanswer(Request $request)
-{$score = Score::where('email', session::get('admin')->email)->where('topic',session::get('quiz')->topic)->first();
-    if(request->input('ans'))
+{
+    $score = Score::where('email', Session::get('admin')->email)->where('topic',Session::get('quiz')->topic)->first();
+    if($request->input('ans'))
     {
-        if(request->input('ans')==session::get('question')->correct)
+        if($request->input('ans')==Session::get('question')->correct)
         {
-            if(!session::get('score'))
+            if(!Session::get('score'))
             {
-                session::put('score',session::get('quiz')->mark);
+                Session::put('score',Session::get('quiz')->mark);
             }else
             {
-                $sc=session::get('score')+session::get('quiz')->mark;
-                session::forget('score');
-                session::put('score',$sc);
+                $sc=Session::get('score') + Session::get('quiz')->mark;
+                Session::forget('score');
+                Session::put('score',$sc);
             }
         }
-        if(!session::get('solved'))
+        if(!Session::get('solved'))
         {
-            session::put('solved',1);
+            Session::put('solved',1);
         }else
-        { $solved=session::get('solved') + 1;
-            session::forget('solved');
-            session::put('solved',$solved);
+        { $solved=Session::get('solved') + 1;
+            Session::forget('solved');
+           Session::put('solved',$solved);
 
         }
-    if(!$score && session::get('num')==session::get('quiz')->totalquestions)
+    if(!$score && Session::get('num')==Session::get('quiz')->totalquestions)
     {
        $score=new Score();
-       $score->topic=session::get('quiz')->topic;
-       $score->email=session::get('admin')->email;
-       if(session::get('score'))
+       $score->topic=Session::get('quiz')->topic;
+       $score->email=Session::get('admin')->email;
+       if(Session::get('score'))
        {
-        $score->score=session::get('score');
+        $score->score=Session::get('score');
        }else
        {
         $score->score=0;
        }
-       $score->mark=session::get('quiz')->mark;
-       $score->numquestion=session::get('quiz')->totalquestion;
-       if(session::get('solved'))
+       $score->mark=Session::get('quiz')->mark;
+       $score->numquestion=Session::get('quiz')->totalquestions;
+       if(Session::get('solved'))
        {
-        $score->solved=session::get('solved');
+        $score->solved=Session::get('solved');
        }else
        {
         $score->solved=0;
        }
        $score->save();
-    }elseif($score && session::get('num')==session::get('quiz')->totalquestions)
+    }elseif($score && Session::get('num')==Session::get('quiz')->totalquestions)
     {
-        if(session::get('score'))
+        if(Session::get('score'))
         {
-         $score->score=session::get('score');
+         $score->score=Session::get('score');
         }else
         {
          $score->score=0;
         } 
         
-        if(session::get('solved'))
+        if(Session::get('solved'))
         {
-         $score->solved=session::get('solved');
+         $score->solved=Session::get('solved');
         }else
         {
          $score->solved=0;
@@ -208,26 +211,47 @@ public function saveanswer(Request $request)
     }
 return redirect ('/admin/respond1');
 }
+
+
+
+
+
+
 public function respondquestion1()
 {
-    $num= session::get('num')+1;
-    session::forget('num');
-    session::put('num',$num);
-if($num <= session::get('quiz')->totalquestions)
+    $num= Session::get('num')+1;
+    Session::forget('num');
+   Session::put('num',$num);
+if($num <=Session::get('quiz')->totalquestions)
 {
     return redirect('/admin/assessements');
 }else{
-    session::forget('num');
-    session::forget('score');
-    session::forget('solved');
+   Session::forget('num');
+    Session::forget('score');
+   Session::forget('solved');
     return redirect('/admin/results');
 }
 
 }
 public function result()
-{  $score=Score::where('topic',session::get('quiz')->topic)->where('email',session::get('admin')->email)->first();
+{  $score=Score::where('topic',Session::get('quiz')->topic)->where('email',Session::get('admin')->email)->first();
 
-     session::forget('quiz');
+    Session::forget('quiz');
     return view('/admin/results')->with('score',$score);
+}
+public function deletedeveloper($email)
+{
+    $developer=Developer::where('email',$email)->first();
+    $scores=Score::where('email',$email)->get();
+
+if($scores){
+    foreach($scores as $score)
+{
+    $score->delete();
+}
+}
+
+    $developer->delete();
+    return back()->with('status','le copmte developpeur a été supprimer avec success!');
 }
 }

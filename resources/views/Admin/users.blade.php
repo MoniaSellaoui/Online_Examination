@@ -10,6 +10,12 @@
 <div class="container">
     <div class="row">
       <div class="col-md-12">
+        @if (Session::has('status'))
+        <div class="alert alert-success">
+          {{Session::get('status')}}
+        </div>
+            
+        @endif
         <div class="panel">
           <div class="table-responsive">
             <table class="table table-striped title1">
@@ -22,24 +28,21 @@
                 <td><b>Mobile</b></td>
                 <td></td>
               </tr>
+              <input type="hidden" {{$increment=1}}>
+              @foreach ($developers as $developer )
               <tr>
-                <td>1</td>
-                <td>Héritier</td>
-                <td>M</td>
-                <td>ISPT_KIN</td>
-                <td>heir@gmail.com</td>
-                <td>824754958</td>
-                <td><a title="Delete User" href=""><b><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></b></a></td>
+                <td>{{$increment}}</td>
+                <td>{{$developer->name}}</td>
+                <td>{{$developer->gender}}</td>
+                <td>{{$developer->college}}</td>
+                <td>{{$developer->email}}</td>
+                <td>{{$developer->phone}}</td>
+                <td><a title="Delete User" href="/admin/deletedeveloper/{{$developer->email}}"><b><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></b></a></td>
               </tr>
-              <tr>
-                <td>2</td>
-                <td>Lyndon</td>
-                <td>F</td>
-                <td>Ser Bermz University</td>
-                <td>serbermz2020@gmail.com</td>
-                <td>9079373999</td>
-                <td><a title="Delete User" href=""><b><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></b></a></td>
-              </tr>
+              <input type="hidden" {{$increment++}}>
+              @endforeach
+     
+           
             </table>
           </div>
         </div>
